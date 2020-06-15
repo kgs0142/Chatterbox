@@ -247,6 +247,14 @@
             }
         },
         {
+            "Key": "80ce9b28-8cad-42b1-9b1f-d6268b96d2af",
+            "Value": {
+                "id": "436c22e1-b74c-44b4-8e58-219af78e4dd3",
+                "resourcePath": "fonts\\font0\\font0.yy",
+                "resourceType": "GMFont"
+            }
+        },
+        {
             "Key": "8427047f-9ef8-4c77-89f3-9c20623d07b6",
             "Value": {
                 "id": "7bba32a6-49dc-4bc9-92e3-c33d7186dafe",
@@ -412,6 +420,22 @@
                 "id": "897c9eeb-3a61-4efe-bf6f-c17ad23d001f",
                 "resourcePath": "views\\d31795bd-3e13-4c6b-bec6-ccf6cfdf0bce.yy",
                 "resourceType": "GMFolder"
+            }
+        },
+        {
+            "Key": "d7c67b85-e556-47d9-87f8-3e0291ae46d8",
+            "Value": {
+                "id": "d42e0b92-cb29-4861-afe8-6da69dc6f41f",
+                "resourcePath": "datafiles_yy\\Yarn\\YarnUnitTest.yarn.yy",
+                "resourceType": "GMIncludedFile"
+            }
+        },
+        {
+            "Key": "d806a19e-c5e6-40a6-b585-030fc7070391",
+            "Value": {
+                "id": "c19bf1c4-8b22-4f9a-99c5-61693f9e6919",
+                "resourcePath": "datafiles_yy\\Yarn\\YarnTest.yarn.yy",
+                "resourceType": "GMIncludedFile"
             }
         },
         {

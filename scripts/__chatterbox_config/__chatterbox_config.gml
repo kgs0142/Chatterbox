@@ -7,7 +7,7 @@
 
 #macro CHATTERBOX_OPTION_FALLBACK_ENABLE   true  //
 #macro CHATTERBOX_OPTION_FALLBACK_TEXT     "..."  //The option text to display if no option text has been found
-#macro CHATTERBOX_DEBUG                    false  //Whether or not to show addition debug information whilst running Chatterbox
+#macro CHATTERBOX_DEBUG                    true  //Whether or not to show addition debug information whilst running Chatterbox
 #macro CHATTERBOX_VARIABLES_MAP            global.chatterbox_variables_map
 
 //chatterbox_get_string() and chatterbox_get_string_count() constants
@@ -42,8 +42,8 @@
 #macro CHATTERBOX_ACTION_OPEN_DELIMITER   "<"
 #macro CHATTERBOX_ACTION_CLOSE_DELIMITER  ">"
 
-#macro CHATTERBOX_DEBUG_PARSER                  false  //Debug the file parser. This can be useful in tracking down formatting issues with source files
-#macro CHATTERBOX_DEBUG_SELECT                  false  //chatterbox_select() is the heart of Chatterbox and executes all dialogue logic
+#macro CHATTERBOX_DEBUG_PARSER                  true  //Debug the file parser. This can be useful in tracking down formatting issues with source files
+#macro CHATTERBOX_DEBUG_SELECT                  true  //chatterbox_select() is the heart of Chatterbox and executes all dialogue logic
 #macro CHATTERBOX_ERROR_ON_MISSING_VARIABLE     false  //Throw an error if a variable (in any scope) is missing
 #macro CHATTERBOX_ERROR_ON_INVALID_DATATYPE     true   //Throw an error when a variable returns a datatype that's unsupported (usually arrays)
 #macro CHATTERBOX_ERROR_ON_MISMATCHED_DATATYPE  false  //Throw an error when two values of different datatypes are being compared

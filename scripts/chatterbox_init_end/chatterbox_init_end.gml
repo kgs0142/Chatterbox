@@ -238,6 +238,11 @@ repeat(_font_count)
                 var _body_substring = string_copy(_body, 1, _pos-1);
                 _body = string_delete(_body, 1, _pos+1);
                 _body_substring = __chatterbox_remove_whitespace(_body_substring, true);
+                _indent = global.__chatterbox_indent_size;
+                repeat (_indent)
+                {
+                    _body = " " + _body;
+                }
             }
             else //Is a newline
             {
@@ -728,7 +733,7 @@ repeat(_font_count)
                 else if (_content[0] == "endif")
                 {
                     _array[@ __CHATTERBOX_INSTRUCTION.TYPE ] = __CHATTERBOX_VM_IF_END;
-                    _array[@ __CHATTERBOX_INSTRUCTION.INDENT ] -= CHATTERBOX_INDENT_UNIT_SIZE;
+                    //_array[@ __CHATTERBOX_INSTRUCTION.INDENT ] -= CHATTERBOX_INDENT_UNIT_SIZE;
                 }
                 else if (_content[0] == "else")
                 {

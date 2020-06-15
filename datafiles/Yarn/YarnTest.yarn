@@ -1,0 +1,79 @@
+title: Start
+tags: 開始 初始 測試
+colorID: 2
+position: 1009,342
+---
+測試測試，第一節點第一行
+
+<<if visited("Node_1") is true>> 
+    已經去過Node 1了
+<<else>> 
+    還沒去過Node 1
+<<endif>> 
+
+Bear:ㄌㄩㄝ
+Leopard:ㄌㄩㄝㄌㄩㄝㄌㄩㄝ
+
+進入可以很複雜的簡單選擇功能
+-> Choice A
+    你選了選擇A
+-> Choice B
+    你選了
+    選擇
+    B
+-> Choice C
+    選擇C很複雜喔
+
+    <<if $var1 == false>> 
+        你想去Node 1 吼
+        [[Node_1]] 
+    <<endif>> 
+
+    -> Choice C-1
+        選擇C-1
+    -> Choice C-2
+        選擇C-2
+        -> Choice C-2-1
+            選擇C-2-1
+        -> Choice C-2-2
+            選擇C-2-2
+
+簡單變數操作和邏輯
+<<if $var1 is true >> 
+    $var1 is true
+<<else>> 
+    $var1 is false
+<<endif>> 
+
+<<set $var1 to true>>
+
+[[Node_1]]
+===
+title: Node_1
+tags: 
+colorID: 0
+position: 1317,345
+---
+Node 1第一行 😬
+
+[[ 你想去節點二嗎 |Node_2]] 
+[[ 還是節點三 |Node_3]]
+===
+title: Node_3
+tags: 
+colorID: 0
+position: 1627,452
+---
+Welcome to 節點三
+
+[[Start]]
+===
+title: Node_2
+tags: 
+colorID: 0
+position: 1631,182
+---
+Welcome to 節點二
+
+[[Start]]
+===

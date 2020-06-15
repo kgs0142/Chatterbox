@@ -188,12 +188,16 @@ if (is_real(_selected_index))
                     {
                         if (_if_state)
                         {
+                            break;
+                        }
+                        else if (!_if_state)
+                        {
                             if (CHATTERBOX_DEBUG_SELECT) show_debug_message("Chatterbox: " + string(_instruction) + ":     _if_state == " + string(_if_state));
                             _if_state = false;
                             if (CHATTERBOX_DEBUG_SELECT) show_debug_message("Chatterbox: " + string(_instruction) + ":       Set _if_state = " + string(_if_state));
                             _continue = true;
                             if (CHATTERBOX_DEBUG_SELECT) show_debug_message("Chatterbox: " + string(_instruction) + ":   <- Continue <-");
-                            break;
+                            //break;
                         }
                     }
                     
