@@ -1,14 +1,14 @@
 title: Start
 tags: 開始 初始 測試
 colorID: 2
-position: 1011,338
+position: 1021,317
 ---
 測試測試，第一節點第一行
 
-<<if visited("Node_1")>>
-    已經去過Node 1了
-<<else>>
+<<if not visited("Node_1")>>
     還沒去過Node 1
+<<else>>
+    已經去過Node 1了
 <<endif>>
 
 <<if $var <= 0 >>
@@ -17,7 +17,6 @@ position: 1011,338
     $var < = 1 yo 
 <<elseif $var == 2>>
     $var == 2
-
     <<if $var >= 0>>
         $var is greater than 0 lo
     <<endif>>
@@ -27,6 +26,11 @@ position: 1011,338
 <<endif>>
 
 <<set $var += 1>> 
+
+You have {$gold} gold pieces.
+<<set $gold to 10>> 
+You have {$gold} gold pieces.
+You have {$gold*2} gold pieces.
 
 Bear:ㄌㄩㄝ
 Leopard:ㄌㄩㄝㄌㄩㄝㄌㄩㄝ
@@ -38,20 +42,21 @@ Leopard:ㄌㄩㄝㄌㄩㄝㄌㄩㄝ
     你選了
     選擇
     B
-
-    <<if $var >= 0>>
-        $var is greater than 0 lo
+    <<if $var >= 1>>
+        $var is greater than 1 lo
     <<endif>>
--> Choice C
-    選擇C很複雜喔
-    -> Choice C-1
-        選擇C-1
-    -> Choice C-2
-        選擇C-2
-        -> Choice C-2-1
-            選擇C-2-1
-        -> Choice C-2-2
-            選擇C-2-2
+<<if $var >= 2>>
+    -> Choice C, an option show up when $var is greater than 2
+        選擇C很複雜喔
+        -> Choice C-1
+            選擇C-1
+        -> Choice C-2
+            選擇C-2
+            -> Choice C-2-1
+                選擇C-2-1
+            -> Choice C-2-2
+                選擇C-2-2
+<<endif>>
 
 簡單變數操作和邏輯
 
@@ -61,12 +66,15 @@ Leopard:ㄌㄩㄝㄌㄩㄝㄌㄩㄝ
 title: Node_1
 tags: 
 colorID: 0
-position: 1317,345
+position: 1331,325
 ---
 Node 1第一行
 
 [[你想去節點二嗎|Node_2]]
-[[還是節點三|Node_3]]
+
+<<if $var >= 2>>
+    [[還是節點三, show up when $var is greater than 2|Node_3]]
+<<endif>>
 ===
 title: Node_3
 tags: 

@@ -293,6 +293,24 @@ if (is_real(_selected_index))
                         break;
                     }
                     
+                    //Check inline expression
+                    var _open_pos = string_pos(CHATTERBOX_INLINE_EXPRESSION_OPEN_DELIMITER, _instruction_content[0]);
+                    var _close_pos = string_pos(CHATTERBOX_INLINE_EXPRESSION_CLOSE_DELIMITER, _instruction_content[0]);
+                    if (_open_pos != 0 && _close_pos != 0)
+                    {
+                        var _length = string_length(_instruction_content[0]);
+                        var _value = string_copy(_instruction_content[0], _open_pos + 1, _close_pos - (_open_pos + 1));
+                        _value = __chatterbox_remove_whitespace(_value, false);
+                        
+                        //Head
+                        var _line = string_copy(_instruction_content[0], 1, _open_pos - 1);
+                        //Resolved expression (only single variable will work for now)
+                        _line += string(__chatterbox_resolve_value(_chatterbox, _value));
+                        //Tail
+                        _line += string_copy(_instruction_content[0], _close_pos + 1, _length - (_close_pos + 1));
+                        _instruction_content[0] = _line;
+                    }
+                    
                     _scan_from_text = true;
                     if (CHATTERBOX_DEBUG_SELECT) show_debug_message("Chatterbox: " + string(_instruction) + ":     Set _scan_from_text = " + string(_scan_from_text));
                     

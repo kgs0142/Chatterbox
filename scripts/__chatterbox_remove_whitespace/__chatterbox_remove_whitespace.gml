@@ -1,4 +1,4 @@
-/// Removes whitespace from either the front or back of a string
+/// Removes whitespace from either the front or back of a string, and change global.__chatterbox_indent_size.
 ///
 /// This is an internal script, please don't modify it.
 ///

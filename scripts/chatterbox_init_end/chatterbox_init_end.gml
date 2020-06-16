@@ -238,7 +238,9 @@ repeat(_font_count)
                 var _body_substring = string_copy(_body, 1, _pos-1);
                 _body = string_delete(_body, 1, _pos+1);
                 _body_substring = __chatterbox_remove_whitespace(_body_substring, true);
+                _line++;
                 _indent = global.__chatterbox_indent_size;
+                //Add the space back, if there is one.
                 repeat (_indent)
                 {
                     _body = " " + _body;
