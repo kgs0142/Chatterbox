@@ -7,6 +7,7 @@
 
 #macro CHATTERBOX_OPTION_FALLBACK_ENABLE   true  //
 #macro CHATTERBOX_OPTION_FALLBACK_TEXT     "..."  //The option text to display if no option text has been found
+#macro CHATTERBOX_UNKNOWN_ACTION_AS_TEXT   true  //Leave the actions that are not built-in and in the global.__chatterbox_actions as a regular text string.
 #macro CHATTERBOX_DEBUG                    true  //Whether or not to show addition debug information whilst running Chatterbox
 #macro CHATTERBOX_VARIABLES_MAP            global.chatterbox_variables_map
 
@@ -43,6 +44,8 @@
 #macro CHATTERBOX_ACTION_CLOSE_DELIMITER            ">"
 #macro CHATTERBOX_INLINE_EXPRESSION_OPEN_DELIMITER  "{"
 #macro CHATTERBOX_INLINE_EXPRESSION_CLOSE_DELIMITER "}"
+
+#macro CHATTERBOX_ACTION_OPEN_PLACEHOLDER           "'<'"
 
 #macro CHATTERBOX_DEBUG_PARSER                  true  //Debug the file parser. This can be useful in tracking down formatting issues with source files
 #macro CHATTERBOX_DEBUG_SELECT                  true  //chatterbox_select() is the heart of Chatterbox and executes all dialogue logic

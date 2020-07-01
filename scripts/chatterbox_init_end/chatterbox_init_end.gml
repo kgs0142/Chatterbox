@@ -275,10 +275,44 @@ repeat(_font_count)
                 else if (_in_action)
                 {
                     _body_substring = __chatterbox_remove_whitespace(_body_substring, false);
-                    ds_list_add(_body_substring_list, [_body_substring, "action", _line, _indent]);
+                    
+                    ///Victor: A tricky checking process for avoiding adding all <<...>> as commands/actions. I'd like to process it in my own system
+                    //I am making it a regular text string
+                    if (CHATTERBOX_UNKNOWN_ACTION_AS_TEXT == true)
+                    {
+                        var posSpace = string_pos(" ", _body_substring) - 1;
+                        posSpace = (posSpace <= 0) ? string_length(_body_substring) : posSpace;
+                        var checkAction = string_copy(_body_substring, 0, posSpace);
+                        if (ds_map_exists(global.__chatterbox_actions, checkAction) == false && 
+                            (checkAction != "if" && checkAction != "else" && checkAction != "elseif" && checkAction != "end" && checkAction != "endif" &&
+                             checkAction != "set" && checkAction != "stop" && checkAction != "wait" && checkAction != "visited"))
+                        {
+                            //show_debug_message("There is no action: " + checkAction);
+                        
+                            _body = CHATTERBOX_ACTION_OPEN_PLACEHOLDER + CHATTERBOX_ACTION_OPEN_PLACEHOLDER +
+                                    _body_substring + 
+                                    CHATTERBOX_ACTION_CLOSE_DELIMITER + CHATTERBOX_ACTION_CLOSE_DELIMITER + 
+                                    _body;
+                        }
+                        else
+                        {
+                            ds_list_add(_body_substring_list, [_body_substring, "action", _line, _indent]);
+                        }
+                    }
+                    else
+                    {
+                        ds_list_add(_body_substring_list, [_body_substring, "action", _line, _indent]);
+                    }
                 }
                 else
                 {
+                    //Victor: Replace all CHATTERBOX_ACTION_OPEN_PLACEHOLDER to CHATTERBOX_ACTION_OPEN_DELIMITER
+                    if (CHATTERBOX_UNKNOWN_ACTION_AS_TEXT == true)
+                    {
+                        _body_substring = string_replace_all(_body_substring, CHATTERBOX_ACTION_OPEN_PLACEHOLDER, CHATTERBOX_ACTION_OPEN_DELIMITER);
+                    }
+                    //------------------------------------------------------------------------------------------
+                    
                     if (_first_on_line)
                     {
                         ds_list_add(_body_substring_list, [_body_substring, "text", _line, _indent]);
