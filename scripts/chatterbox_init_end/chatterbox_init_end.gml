@@ -285,14 +285,27 @@ repeat(_font_count)
                         var checkAction = string_copy(_body_substring, 0, posSpace);
                         if (ds_map_exists(global.__chatterbox_actions, checkAction) == false && 
                             (checkAction != "if" && checkAction != "else" && checkAction != "elseif" && checkAction != "end" && checkAction != "endif" &&
-                             checkAction != "set" && checkAction != "stop" && checkAction != "wait" && checkAction != "visited"))
+                                checkAction != "set" && checkAction != "stop" && checkAction != "wait" && checkAction != "visited"))
                         {
                             //show_debug_message("There is no action: " + checkAction);
                         
-                            _body = CHATTERBOX_ACTION_OPEN_PLACEHOLDER + CHATTERBOX_ACTION_OPEN_PLACEHOLDER +
-                                    _body_substring + 
-                                    CHATTERBOX_ACTION_CLOSE_DELIMITER + CHATTERBOX_ACTION_CLOSE_DELIMITER + 
-                                    _body;
+                            //_body = CHATTERBOX_ACTION_OPEN_PLACEHOLDER + CHATTERBOX_ACTION_OPEN_PLACEHOLDER +
+                            //        _body_substring + 
+                            //        CHATTERBOX_ACTION_CLOSE_PLACEHOLDER + CHATTERBOX_ACTION_CLOSE_PLACEHOLDER + 
+                            //        _body;
+                            
+                            var _full_action_string = CHATTERBOX_ACTION_OPEN_DELIMITER + CHATTERBOX_ACTION_OPEN_DELIMITER +
+                                                      _body_substring + CHATTERBOX_ACTION_CLOSE_DELIMITER + CHATTERBOX_ACTION_CLOSE_DELIMITER;
+                            if (_first_on_line)
+                            {
+                                ds_list_add(_body_substring_list, [_full_action_string, "text", _line, _indent]);
+                            }
+                            else
+                            {
+                                var _prev_array = _body_substring_list[| ds_list_size(_body_substring_list) - 1];
+                                //_prev_array[@ 0] += " " + _full_action_string;
+                                _prev_array[@ 0] += "" + _full_action_string;
+                            }                 
                         }
                         else
                         {
@@ -306,13 +319,6 @@ repeat(_font_count)
                 }
                 else
                 {
-                    //Victor: Replace all CHATTERBOX_ACTION_OPEN_PLACEHOLDER to CHATTERBOX_ACTION_OPEN_DELIMITER
-                    if (CHATTERBOX_UNKNOWN_ACTION_AS_TEXT == true)
-                    {
-                        _body_substring = string_replace_all(_body_substring, CHATTERBOX_ACTION_OPEN_PLACEHOLDER, CHATTERBOX_ACTION_OPEN_DELIMITER);
-                    }
-                    //------------------------------------------------------------------------------------------
-                    
                     if (_first_on_line)
                     {
                         ds_list_add(_body_substring_list, [_body_substring, "text", _line, _indent]);
@@ -322,7 +328,8 @@ repeat(_font_count)
                         var _prev_array = _body_substring_list[| ds_list_size(_body_substring_list)-1];
                         if (_prev_array[1] == "text")
                         {
-                            _prev_array[@ 0] += " " + _body_substring;
+                            //_prev_array[@ 0] += " " + _body_substring;
+                            _prev_array[@ 0] += "" + _body_substring;
                         }
                         else
                         {
