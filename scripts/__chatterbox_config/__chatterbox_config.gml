@@ -45,8 +45,6 @@
 #macro CHATTERBOX_INLINE_EXPRESSION_OPEN_DELIMITER  "{"
 #macro CHATTERBOX_INLINE_EXPRESSION_CLOSE_DELIMITER "}"
 
-#macro CHATTERBOX_ACTION_OPEN_PLACEHOLDER           "'<'"
-
 #macro CHATTERBOX_DEBUG_PARSER                  true  //Debug the file parser. This can be useful in tracking down formatting issues with source files
 #macro CHATTERBOX_DEBUG_SELECT                  true  //chatterbox_select() is the heart of Chatterbox and executes all dialogue logic
 #macro CHATTERBOX_ERROR_ON_MISSING_VARIABLE     false  //Throw an error if a variable (in any scope) is missing
