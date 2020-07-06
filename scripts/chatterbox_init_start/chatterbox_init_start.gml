@@ -78,21 +78,26 @@ show_debug_message("Chatterbox: Welcome to Chatterbox by @jujuadams! This is ver
 
 var _font_directory = argument0;
 
-if (__CHATTERBOX_ON_MOBILE)
-{
-    if (_font_directory != "")
-    {
-        show_debug_message("Chatterbox: Included Files work a bit strangely on iOS and Android. Please use an empty string for the font directory and place Yarn .json files in the root of Included Files.");
-        show_error("Chatterbox:\nGameMaker's Included Files work a bit strangely on iOS and Android.\nPlease use an empty string for the font directory and place Yarn .json files in the root of Included Files.\n ", true);
-        exit;
-    }
-}
-else
-{
-    //Fix the font directory name if it's weird
-    var _char = string_char_at(_font_directory, string_length(_font_directory));
-    if (_char != "\\") && (_char != "/") _font_directory += "\\";
-}
+//This issue won't be happened on v2.2.5.481, so I commented this.
+//if (__CHATTERBOX_ON_MOBILE)
+//{
+//    if (_font_directory != "")
+//    {
+//        show_debug_message("Chatterbox: Included Files work a bit strangely on iOS and Android. Please use an empty string for the font directory and place Yarn .json files in the root of Included Files.");
+//        show_error("Chatterbox:\nGameMaker's Included Files work a bit strangely on iOS and Android.\nPlease use an empty string for the font directory and place Yarn .json files in the root of Included Files.\n ", true);
+//        exit;
+//    }
+//}
+//else
+//{
+//    //Fix the font directory name if it's weird
+//    var _char = string_char_at(_font_directory, string_length(_font_directory));
+//    if (_char != "\\") && (_char != "/") _font_directory += "\\";
+//}
+
+//Fix the font directory name if it's weird
+var _char = string_char_at(_font_directory, string_length(_font_directory));
+if (_char != "\\") && (_char != "/") _font_directory += "\\";
 
 //Check if the directory exists
 if ( !directory_exists(_font_directory) )
