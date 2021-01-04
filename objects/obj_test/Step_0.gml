@@ -1,3 +1,8 @@
+if (global.lockYarnSystem == true)
+{
+    exit;
+}
+
 if (chatterbox_is_stopped(box))
 {
     //If we're stopped then don't respond to user input

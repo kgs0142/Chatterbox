@@ -88,7 +88,14 @@ function __chatterbox_split_body(_body)
     
     var _body_byte_length = string_byte_length(_body);
     var _body_buffer = buffer_create(_body_byte_length+1, buffer_fixed, 1);
-    buffer_poke(_body_buffer, 0, buffer_string, _body);
+    //buffer_poke(_body_buffer, 0, buffer_string, _body);
+    buffer_seek(_body_buffer, buffer_seek_start, 0);
+    buffer_write(_body_buffer, buffer_string, _body);
+    buffer_seek(_body_buffer, buffer_seek_start, 0);
+
+    //buffer_poke(_body_buffer, 0, buffer_string, _body);
+    //show_debug_message("__chatterbox_split_body: " + buffer_read(_body_buffer, buffer_string));
+    //buffer_seek(_body_buffer, buffer_seek_start, 0);
     
     var _line          = 0;
     var _first_on_line = true;
@@ -438,11 +445,19 @@ function __chatterbox_parse_expression(_string, _action_syntax)
                     var _is_function = (_last_byte == 40); //Cheeky hack to find functions
                     
                     //Just a normal keyboard/variable
-                    buffer_poke(_buffer, _b, buffer_u8, 0);
+                    //buffer_poke(_buffer, _b, buffer_u8, 0);
+                    buffer_seek(_buffer, buffer_seek_start, _b);
+                    buffer_write(_buffer, buffer_u8, 0);
+
                     buffer_seek(_buffer, buffer_seek_start, _read_start);
                     var _read = buffer_read(_buffer, buffer_string);
-                    buffer_poke(_buffer, _b, buffer_u8, _byte);
+                    var bufferPos = buffer_tell(_buffer);
                     
+                    //buffer_poke(_buffer, _b, buffer_u8, _byte);
+                    buffer_seek(_buffer, buffer_seek_start, _b);
+                    buffer_write(_buffer, buffer_u8, _byte);
+                    buffer_seek(_buffer, buffer_seek_start, bufferPos);
+
                     if (!_is_function)
                     {
                         //Convert friendly human-readable operators into symbolic operators
@@ -546,10 +561,17 @@ function __chatterbox_parse_expression(_string, _action_syntax)
                     
                     if (_read_start < _b - 1)
                     {
-                        buffer_poke(_buffer, _b, buffer_u8, 0);
+                        //buffer_poke(_buffer, _b, buffer_u8, 0);
+                        buffer_seek(_buffer, buffer_seek_start, 0);
+                        buffer_write(_buffer, buffer_u8, 0);
                         buffer_seek(_buffer, buffer_seek_start, _read_start+1);
+                        
                         var _read = buffer_read(_buffer, buffer_string);
-                        buffer_poke(_buffer, _b, buffer_u8, _byte);
+                        var bufferPos = buffer_tell(_buffer);
+                        //buffer_poke(_buffer, _b, buffer_u8, _byte);
+                        buffer_seek(_buffer, buffer_seek_start, _b);
+                        buffer_write(_buffer, buffer_u8, _byte);
+                        buffer_seek(_buffer, buffer_seek_start, bufferPos);
                     }
                     else
                     {
@@ -581,11 +603,19 @@ function __chatterbox_parse_expression(_string, _action_syntax)
                 
                 if (_state != _next_state)
                 {
-                    buffer_poke(_buffer, _b, buffer_u8, 0);
+                    //buffer_poke(_buffer, _b, buffer_u8, 0);
+                    buffer_seek(_buffer, buffer_seek_start, _b);
+                    buffer_write(_buffer, buffer_u8, 0);
+                    
                     buffer_seek(_buffer, buffer_seek_start, _read_start);
                     var _read = buffer_read(_buffer, buffer_string);
-                    buffer_poke(_buffer, _b, buffer_u8, _byte);
+                    var bufferPos = buffer_tell(_buffer);
                     
+                    //buffer_poke(_buffer, _b, buffer_u8, _byte);
+                    buffer_seek(_buffer, buffer_seek_start, _b);
+                    buffer_write(_buffer, buffer_u8, _byte);
+                    buffer_seek(_buffer, buffer_seek_start, bufferPos);
+
                     try
                     {
                         _read = real(_read);
@@ -631,11 +661,18 @@ function __chatterbox_parse_expression(_string, _action_syntax)
                 
                 if (_state != _next_state)
                 {
-                    buffer_poke(_buffer, _b, buffer_u8, 0);
+                    //buffer_poke(_buffer, _b, buffer_u8, 0);
+                    buffer_seek(_buffer, buffer_seek_start, _b);
+                    buffer_write(_buffer, buffer_u8, 0);
+                    
                     buffer_seek(_buffer, buffer_seek_start, _read_start);
                     var _read = buffer_read(_buffer, buffer_string);
-                    buffer_poke(_buffer, _b, buffer_u8, _byte);
-                    
+                    var bufferPos = buffer_tell(_buffer);
+                    //buffer_poke(_buffer, _b, buffer_u8, _byte);
+                    buffer_seek(_buffer, buffer_seek_start, _b);
+                    buffer_write(_buffer, buffer_u8, _byte);
+                    buffer_seek(_buffer, buffer_seek_start, bufferPos);
+
                     __chatterbox_array_add(_tokens, { op : _read });
                     _new = true;
                 }

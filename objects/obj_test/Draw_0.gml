@@ -2,6 +2,13 @@
 var _x = 10;
 var _y = 10;
 
+if (global.lockYarnSystem == true)
+{
+    exit;
+}
+
+draw_set_font(fnt_default);
+
 if (chatterbox_is_stopped(box))
 {
     //If we're stopped then show that

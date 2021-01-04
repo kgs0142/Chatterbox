@@ -1,14 +1,14 @@
 title: Start
 tags: 開始 初始 測試
 colorID: 2
-position: 1021,317
+position: 1019,317
 ---
 測試測試，第一節點第一行
 
-<<if not visited("Node_1")>>
-    還沒去過Node 1
-<<else>>
+<<if visited("Node_1")>>
     已經去過Node 1了
+<<else>>
+    還沒去過Node 1
 <<endif>>
 
 <<if $var <= 0 >>
