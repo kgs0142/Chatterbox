@@ -2,244 +2,229 @@
 ///
 /// This is an internal script, please don't modify it.
 ///
-/// @param chatterboxHost
-/// @param contentArray
+/// @param localScope
+/// @param filename
+/// @param expression
 
-var _chatterbox = argument0;
-var _content    = argument1;
-
-var _filename = _chatterbox[ __CHATTERBOX_HOST.FILENAME  ];
-
-var _resolved_array = array_create(array_length_1d(_content), pointer_null); //Copy the array
-
-var _queue = ds_list_create();
-ds_list_add(_queue, 1);
-repeat(9999)
+function __chatterbox_evaluate(_local_scope, _filename, _expression)
 {
-    if (ds_list_empty(_queue)) break;
+    if (!is_struct(_expression)) return _expression;
     
-    var _element_index = _queue[| 0];
-    var _element = _content[_element_index];
-    
-    if (!is_array(_element))
+    if (_expression.op == "var")
     {
-        _resolved_array[_element_index] = _element;
-        ds_list_delete(_queue, 0);
-    }
-    else
-    {
-        #region Check if all elements have been resolved
+        #region
         
-        var _fully_resolved = true;
-        var _element_length = array_length_1d(_element);
-        for(var _i = 0; _i < _element_length; _i++)
+        var _value = undefined;
+        switch(_expression.scope)
         {
-            var _child_index = _element[_i];
-            if (is_ptr(_resolved_array[_child_index]) && (_resolved_array[_child_index] == pointer_null))
-            {
-                _fully_resolved = false;
-                ds_list_insert(_queue, 0, _child_index);
-            }
+            case "yarn":
+                if (!ds_map_exists(CHATTERBOX_VARIABLES_MAP, _expression.name))
+                {
+                    if (CHATTERBOX_ERROR_MISSING_VARIABLE_GET)
+                    {
+                        __chatterbox_error("Yarn variable \"" + _expression.name + "\" can't be read because it doesn't exist");
+                    }
+                    else
+                    {
+                        __chatterbox_trace("Warning! Yarn variable \"" + _expression.name + "\" can't be read because it doesn't exist");
+                    }
+                    
+                    _value = CHATTERBOX_DEFAULT_VARIABLE_VALUE;
+                }
+                else
+                {
+                    _value = CHATTERBOX_VARIABLES_MAP[? _expression.name];
+                }
+            break;
+            
+            case "local":
+                if (!variable_instance_exists(_local_scope, _expression.name))
+                {
+                    if (CHATTERBOX_ERROR_MISSING_VARIABLE_GET)
+                    {
+                        __chatterbox_error("Local variable \"" + _expression.name + "\" can't be read because it doesn't exist");
+                    }
+                    else
+                    {
+                        __chatterbox_trace("Warning! Local variable \"" + _expression.name + "\" can't be read because it doesn't exist");
+                    }
+                    
+                    _value = CHATTERBOX_DEFAULT_VARIABLE_VALUE;
+                }
+                else
+                {
+                    _value = variable_instance_get(_local_scope, _expression.name);
+                }
+            break;
+            
+            case "global":
+                if (!variable_global_exists(_expression.name))
+                {
+                    if (CHATTERBOX_ERROR_MISSING_VARIABLE_GET)
+                    {
+                        __chatterbox_error("Global variable \"" + _expression.name + "\" can't be read because it doesn't exist!");
+                    }
+                    else
+                    {
+                        __chatterbox_trace("Warning! Global variable \"" + _expression.name + "\" can't be read because it doesn't exist");
+                    }
+                    
+                    _value = CHATTERBOX_DEFAULT_VARIABLE_VALUE;
+                }
+                else
+                {
+                    _value = variable_global_get(_expression.name);
+                }
+            break;
         }
         
-        #endregion
-        
-        if (_fully_resolved)
+        if (!is_numeric(_value) && !is_string(_value))
         {
-            if ((_element_length >= 2) && (_resolved_array[_element[1]] == "()"))
+            var _typeof = typeof(_value);
+            if (CHATTERBOX_ERROR_INVALID_DATATYPE)
             {
-                #region Function execution
-                
-                var _result = undefined;
-                var _function = _resolved_array[_element[0]];
-                
-                var _function_args = array_create(_element_length-2);
-                for(var _i = 2; _i < _element_length; _i++) _function_args[_i-2] = __chatterbox_resolve_value(_chatterbox, _resolved_array[_element[_i]]);
-                
-                if (_function == "visited")
-                {
-                    if (_element_length == 3) _function_args[1] = _filename;
-                    _result = CHATTERBOX_VARIABLES_MAP[? "visited(" + _function_args[1] + CHATTERBOX_FILENAME_SEPARATOR + _function_args[0] + ")" ];
-                    _result = (_result == undefined)? false : _result;
-                }
-                else
-                {
-                    _function = global.__chatterbox_permitted_scripts[? _function ];
-                    if (_function != undefined)
-                    {
-                        _result = script_execute(_function, _function_args);
-        
-                        var _typeof = typeof(_result);
-                        if (_typeof == "array") || (_typeof == "ptr") || (_typeof == "null") || (_typeof == "vec3") || (_typeof == "vec4")
-                        {
-                            if (CHATTERBOX_ERROR_ON_INVALID_DATATYPE)
-                            {
-                                show_error("Chatterbox:\nVariable \"" + _result + "\" has an unsupported datatype (" + _typeof + ")\n ", false);
-                            }
-                            else
-                            {
-                                show_debug_message("Chatterbox: WARNING! Variable \"" + _result + "\" has an unsupported datatype (" + _typeof + ")");
-                            }
-                            
-                            _result = string(_result);
-                        }
-                        
-                        if (_typeof == "bool") || (_typeof == "int32") || (_typeof == "int64")
-                        {
-                            _result = real(_result);
-                        }
-                    }
-                    else
-                    {
-                        //Error!
-                    }
-                }
-                
-                _resolved_array[_element_index] = is_string(_result)? ("\"" + string(_result) + "\"") : string(_result);
-                
-                #endregion
+                __chatterbox_error("Variable \"" + _value + "\" has an unsupported datatype (" + _typeof + ")");
             }
-            else if (_element_length == 1)
+            else
             {
-                #region Resolve 1-length elements (usually a static value, but you never know)
-                
-                var _result = undefined;
-                var _element_value = _element[0];
-                if (is_real(_element_value))
-                {
-                    _resolved_array[_element_index] = _resolved_array[_element[0]];
-                }
-                else
-                {
-                    _resolved_array[_element_index] = _element[0];
-                }
-                
-                #endregion
-            }
-            else if (_element_length == 2)
-            {
-                #region Resolve unary operators (!variable / -variable)
-                
-                var _operator = _resolved_array[_element[0]];
-                var _value    = _resolved_array[_element[1]];
-                    _value    = __chatterbox_resolve_value(_chatterbox, _value);
-                
-                var _result = undefined;
-                if (is_real(_value))
-                {
-                    if (_operator == "!")
-                    {
-                        _result = !_value;
-                    }
-                    else if (_operator == "-")
-                    {
-                        _result = -_value;
-                    }
-                    else
-                    {
-                        show_debug_message("Chatterbox: WARNING! 2-length evaluation element with unrecognised operator: \"" + string(_operator) + "\"");
-                    }
-                }
-                
-                _resolved_array[_element_index] = is_string(_result)? ("\"" + string(_result) + "\"") : string(_result);
-                
-                #endregion
-            }
-            else if (_element_length == 3)
-            {
-                #region Figure out datatypes and grab variable values
-                
-                var _a        = _resolved_array[_element[0]];
-                var _operator = _resolved_array[_element[1]];
-                var _b        = _resolved_array[_element[2]];
-                
-                var _a_value = __chatterbox_resolve_value(_chatterbox, _a);
-                var _a_scope = global.__chatterbox_scope;
-                _a = (global.__chatterbox_variable_name != __CHATTERBOX_VARIABLE_INVALID)? global.__chatterbox_variable_name : _a;
-                global.__chatterbox_scope = CHATTERBOX_SCOPE_INVALID;
-                var _b_value = __chatterbox_resolve_value(_chatterbox, _b);
-                
-                #endregion
-                
-                #region Resolve binary operators
-                
-                var _result = undefined;
-                var _set = false;
-                
-                var _both_real         = (is_real(_a_value) && is_real(_b_value));
-                var _matching_types    = (typeof(_a_value) == typeof(_b_value));
-                var _either_string     = (is_string(_a_value) || is_string(_b_value));
-                var _neither_undefined = (!is_undefined(_a_value) && !is_undefined(_b_value));
-                
-                if (!_matching_types)
-                {
-                    if (_operator != "+") && (_operator != "+=") && (_operator != "==") && (_operator != "!=")
-                    {
-                        if (CHATTERBOX_ERROR_ON_MISMATCHED_DATATYPE)
-                        {
-                            show_error("Chatterbox:\nMismatched datatypes\n ", false);
-                        }
-                        else
-                        {
-                            show_debug_message("Chatterbox: WARNING! Mismatched datatypes");
-                        }
-                    }
-                }
-                
-                switch(_operator)
-                {
-                    case "/": if (_both_real) _result = _a_value / _b_value; break;
-                    case "*": if (_both_real) _result = _a_value * _b_value; break;
-                    case "-": if (_both_real) _result = _a_value - _b_value; break;
-                    case "+":
-                        if (_neither_undefined)
-                        {
-                            _result = (_either_string)? (string(_a_value) + string(_b_value)) : (_a_value + _b_value);
-                        }
-                    break;
-                    
-                    case "/=": _set = true; if (_both_real) _result = _a_value / _b_value; break;
-                    case "*=": _set = true; if (_both_real) _result = _a_value * _b_value; break;
-                    case "-=": _set = true; if (_both_real) _result = _a_value - _b_value; break;
-                    case "=":  _set = true;                 _result =            _b_value; break;
-                    case "+=":
-                        _set = true;
-                        if (_neither_undefined)
-                        {
-                            _result = (_either_string)? (string(_a_value) + string(_b_value)) : (_a_value + _b_value);
-                        }
-                    break;
-                    
-                    case "||": _result = _both_real?      (_a_value || _b_value) : false; break;
-                    case "&&": _result = _both_real?      (_a_value && _b_value) : false; break;
-                    case ">=": _result = _both_real?      (_a_value >= _b_value) : false; break;
-                    case "<=": _result = _both_real?      (_a_value <= _b_value) : false; break;
-                    case ">":  _result = _both_real?      (_a_value >  _b_value) : false; break;
-                    case "<":  _result = _both_real?      (_a_value <  _b_value) : false; break;
-                    case "!=": _result = _matching_types? (_a_value != _b_value) : true;  break;
-                    case "==": _result = _matching_types? (_a_value == _b_value) : false; break;
-                }
-                
-                if (_set)
-                {
-                    switch(_a_scope)
-                    {                   
-                        case CHATTERBOX_SCOPE_INTERNAL:   CHATTERBOX_VARIABLES_MAP[? _a ] = _result; break;
-                        case CHATTERBOX_SCOPE_GML_LOCAL:  variable_instance_set(id, _a, _result);    break;
-                        case CHATTERBOX_SCOPE_GML_GLOBAL: variable_global_set(_a, _result);          break;
-                    }
-                }
-                
-                _resolved_array[_element_index] = is_string(_result)? ("\"" + string(_result) + "\"") : string(_result);
-                
-                #endregion
+                __chatterbox_trace("Error! Variable \"" + _value + "\" has an unsupported datatype (" + _typeof + ")");
             }
             
-            ds_list_delete(_queue, 0);
+            _value = string(_value);
         }
+        
+        return _value;
+        
+        #endregion
     }
+    
+    var _a = undefined;
+    var _b = undefined;
+    
+    switch(_expression.op)
+    {
+        case "/":
+        case "*":
+        case "-":
+        case "+":
+        case "||":
+        case "&&":
+        case ">=":
+        case "<=":
+        case ">":
+        case "<":
+        case "!=":
+        case "==":
+        case "/=":
+        case "*=":
+        case "-=":
+        case "+=":
+            _a = __chatterbox_evaluate(_local_scope, _filename, _expression.a);
+            _b = __chatterbox_evaluate(_local_scope, _filename, _expression.b);
+        break;
+        
+        case "!":
+        case "neg":
+        case "paren":
+        case "param":
+            _a = __chatterbox_evaluate(_local_scope, _filename, _expression.a);
+        break;
+        
+        case "func":
+            var _parameters = _expression.parameters;
+            var _parameter_values = array_create(array_length(_parameters), undefined);
+            var _p = 0;
+            repeat(array_length(_parameters))
+            {
+                _parameter_values[@ _p] = __chatterbox_evaluate(_local_scope, _filename, _parameters[_p]);
+                ++_p;
+            }
+        break;
+        
+        case "=":
+            _b = __chatterbox_evaluate(_local_scope, _filename, _expression.b);
+        break;
+    }
+    
+    var _set = false;
+    switch(_expression.op)
+    {
+        case "/":  return _a /  _b; break;
+        case "*":  return _a *  _b; break;
+        case "-":  return _a -  _b; break;
+        case "+":  return _a +  _b; break;
+        case "||": return _a || _b; break;
+        case "&&": return _a && _b; break;
+        case ">=": return _a >= _b; break;
+        case "<=": return _a <= _b; break;
+        case ">":  return _a >  _b; break;
+        case "<":  return _a <  _b; break;
+        case "!=": return _a != _b; break;
+        case "==": return _a == _b; break;
+        
+        case "!":     return !_a; break;
+        case "neg":   return -_a; break;
+        case "paren": return  _a; break;
+        case "param": return  _a; break;
+        
+        case "func":
+            if (_expression.name == "visited")
+            {
+                return chatterbox_visited(_parameter_values[0], _filename);
+            }
+            else
+            {
+                var _method = global.__chatterbox_functions[? _expression.name];
+                
+                if (is_method(_method))
+                {
+                    with(_local_scope) return _method(_parameter_values);
+                }
+                else
+                {
+                    if (CHATTERBOX_ERROR_MISSING_FUNCTION)
+                    {
+                        __chatterbox_error("Function \"", _expression.name, "\" not defined with chatterbox_add_function()");
+                    }
+                    else
+                    {
+                        __chatterbox_trace("Error! Function \"", _expression.name, "\" not defined with chatterbox_add_function()");
+                    }
+                }
+                
+                return undefined;
+            }
+        break;
+        
+        case "/=": _a /= _b; _set = true; break;
+        case "*=": _a *= _b; _set = true; break;
+        case "-=": _a -= _b; _set = true; break;
+        case "+=": _a += _b; _set = true; break;
+        case "=":  _a  = _b; _set = true; break;
+    }
+    
+    if (_set)
+    {
+        switch(_expression.a.scope)
+        {                   
+            case "yarn":
+                CHATTERBOX_VARIABLES_MAP[? _expression.a.name] = _a;
+                __chatterbox_trace("Set Yarn variable \"", _expression.a.name, "\" to ", _a);
+            break;
+            
+            case "local":
+                variable_instance_set(_local_scope, _expression.a.name, _a);
+                __chatterbox_trace("Set local variable \"", _expression.a.name, "\" to ", _a, " (local scope=", _local_scope, ")");
+            break;
+            
+            case "global":
+                variable_global_set(_expression.a.name, _a);
+                __chatterbox_trace("Set global variable \"", _expression.a.name, "\" to ", _a);
+            break;
+        }
+        
+        return _a;
+    }
+    
+    return undefined;
 }
-
-ds_list_destroy(_queue);
-
-return __chatterbox_resolve_value(_chatterbox, _resolved_array[1]);
