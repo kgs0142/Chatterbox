@@ -3,7 +3,7 @@
   "isCompatibility": false,
   "parent": {
     "name": "Flow",
-    "path": "folders/Chatterbox/Flow.yy",
+    "path": "folders/Scripts/Common/JuJuAdams/Chatterbox/Flow.yy",
   },
   "resourceVersion": "1.0",
   "name": "chatterbox_select",

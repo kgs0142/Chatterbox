@@ -3,7 +3,7 @@
   "isCompatibility": false,
   "parent": {
     "name": "JuJuAdams",
-    "path": "folders/Other Files/JuJuAdams.yy",
+    "path": "folders/Scripts/Common/JuJuAdams.yy",
   },
   "resourceVersion": "1.0",
   "name": "DoLater",

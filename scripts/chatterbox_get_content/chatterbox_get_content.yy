@@ -3,7 +3,7 @@
   "isCompatibility": false,
   "parent": {
     "name": "Getters",
-    "path": "folders/Chatterbox/Getters.yy",
+    "path": "folders/Scripts/Common/JuJuAdams/Chatterbox/Getters.yy",
   },
   "resourceVersion": "1.0",
   "name": "chatterbox_get_content",

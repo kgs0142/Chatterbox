@@ -2,8 +2,8 @@
   "isDnD": false,
   "isCompatibility": false,
   "parent": {
-    "name": "Other Files",
-    "path": "folders/Other Files.yy",
+    "name": "JuJuAdams",
+    "path": "folders/Scripts/Common/JuJuAdams.yy",
   },
   "resourceVersion": "1.0",
   "name": "__chatterbox_extention",

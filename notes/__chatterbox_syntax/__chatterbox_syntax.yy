@@ -1,7 +1,7 @@
 {
   "parent": {
     "name": "Chatterbox",
-    "path": "folders/Chatterbox.yy",
+    "path": "folders/Scripts/Common/JuJuAdams/Chatterbox.yy",
   },
   "resourceVersion": "1.1",
   "name": "__chatterbox_syntax",
